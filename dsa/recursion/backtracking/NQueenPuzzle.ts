@@ -12,55 +12,25 @@ const solveNQueenPuzzle = (board: string[][], queens: number, rowLimit: number, 
 
   const visited = initialize2DArray<string>(rowLimit, columnLimit, 'E');
 
-  const markedQueens: any[] = [];
-
-  const markQueen = (row: number, column: number) =>
+  const isQueenSafeTobePlaced = (currentRow: number, currentColumn: number): boolean =>
   {
-    const queenPosition =
+    for(let row = 0; row < rowLimit; row++)
     {
-      row,
-      column
-    };
-    markedQueens.push(queenPosition);
-  };
+      for(let column = 0; column < columnLimit; column++)
+      {
+        if(visited[row][column] === 'Q')
+        {
+          // check if the line is 180 degree means both x axis points are the same
+          if(row - currentRow === 0) return false;
 
-  const clearMarkedQueens = () => markedQueens.splice(0);
-  // const result: string[];
+          // check if the line is 90 degree means both y axis points are the same
+          if(column - currentColumn === 0) return false;
 
-  const isQueenAllowedTobePlaced = (currentRow: number, currentColumn: number): boolean =>
-  {
-    // mark column
-    for(let index = 0; index < columnLimit; index++)
-    {
-       if(visited[currentRow][index] === 'Q') return false;
+          // check if the line is 45 degree means both points are diagnoally alligned
+          if(Math.abs((column - currentColumn) / (row - currentRow)) === 1) return false;
+        }
+      }
     }
-    
-    // mark row
-    for(let index = 0; index < rowLimit; index++)
-    {
-       if(visited[index][currentColumn] === 'Q') return false;
-    }
-
-    let diagonalRow = currentRow;
-    let diagonalColumn = currentColumn;
-
-    while(diagonalRow < rowLimit && diagonalColumn < columnLimit)
-    {
-     if(visited[diagonalRow][diagonalColumn] === 'Q') return false;
-      diagonalRow++
-      diagonalColumn++;
-    }
-   
-    diagonalRow = currentRow;
-    diagonalColumn = currentColumn;
-
-    while(diagonalRow >= 0 && diagonalColumn >= 0)
-    {
-     if(visited[diagonalRow][diagonalColumn] === 'Q') return false;
-      diagonalRow--
-      diagonalColumn--;
-    }
-
     return true;
   };
 
@@ -75,7 +45,7 @@ const solveNQueenPuzzle = (board: string[][], queens: number, rowLimit: number, 
      if(row >= rowLimit) return;
      for(let index = 0; index < columnLimit; index++)
      {
-       if(isQueenAllowedTobePlaced(row, index))
+       if(isQueenSafeTobePlaced(row, index))
        {
           visited[row][index] = 'Q';
           solve(remainingQueens - 1, row + 1);
@@ -90,15 +60,16 @@ const solveNQueenPuzzle = (board: string[][], queens: number, rowLimit: number, 
 
 const board : string[][] = 
 [
-  ['E', 'E', 'E'],
-  ['E', 'E', 'E'],
-  ['E', 'E', 'E']
+  ['E', 'E', 'E', 'E', 'E'],
+  ['E', 'E', 'E', 'E', 'E'],
+  ['E', 'E', 'E', 'E', 'E'],
+  ['E', 'E', 'E', 'E', 'E'],
+  ['E', 'E', 'E', 'E', 'E']
 ];
 
-solveNQueenPuzzle(board, 2, 3, 3);
+solveNQueenPuzzle(board, 5, 5, 5);
 
 /**
  * E - Empty
  * Q - Queen
- * R - Red Zone
  */
